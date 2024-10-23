@@ -7,6 +7,7 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlin.math.max
 
 fun Route.expensesRouting() {
 
@@ -40,7 +41,12 @@ fun Route.expensesRouting() {
 
     post("/expenses") {
         val expense = call.receive<Expense>()
-        expenses.add(expense)
+        val maxId = expenses.maxOf { it.id } + 1
+        expenses.add(
+            expense.copy(
+                id = maxId
+            )
+        )
         call.respond(
             HttpStatusCode.OK,
             "Expense added successfully"
