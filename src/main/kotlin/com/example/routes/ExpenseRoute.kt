@@ -66,4 +66,23 @@ fun Route.expensesRouting() {
             "Expense updated successfully"
         )
     }
+
+    delete("/expenses/{id}") {
+        val id = call.pathParameters["id"]?.toLongOrNull()
+
+        if (id == null || id !in 0 until expenses.size) {
+            call.respond (
+                HttpStatusCode.NotFound,
+                ErrorResponse("Expense not found")
+            )
+            return@delete
+        }
+
+        expenses.removeIf { it.id == id }
+
+        call.respond(
+            HttpStatusCode.OK,
+            "Expense deleted successfully"
+        )
+    }
 }
